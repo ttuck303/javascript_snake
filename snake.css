@@ -20,3 +20,11 @@
   text-align: center;
   background-color: gray;
 }
+
+.snake {
+  background-color: green;
+}
+
+.food {
+  background-color: yellow;
+}
