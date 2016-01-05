@@ -1,6 +1,7 @@
 $( document ).ready(function(){
   console.log('document ready!');
   const grid_side_length = 40;
+  var direction;
   intialize_grid(grid_side_length);
   initialize_snake();
 });
@@ -17,6 +18,38 @@ var intialize_grid = function(side_length){
   };
 };
 
+var change_direction = function(dir){
+  direction = dir;
+  console.log("new direction is "+ direction);
+};
+
+$(document).keydown(function(e) {
+  switch(e.which) {
+        case 37: // left
+        console.log("pressed left");
+        change_direction("l");
+        break;
+
+        case 38: // up
+        console.log("pressed up");
+        change_direction("u");
+        break;
+
+        case 39: // right
+        console.log("pressed right");
+        change_direction("r");
+        break;
+
+        case 40: // down
+        console.log("pressed down");
+        change_direction("d");
+        break;
+
+        default: return; // exit this handler for other keys
+      }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+  });
+
 var initialize_snake = function(){
   // create a 1 unit snake and initialize the direction of travel
   var x = Math.floor(Math.random()*20)+10;
@@ -30,7 +63,7 @@ var increase_snake_length = function(){
   // add 1 to a snake length variable
 };
 
-var advance_snake = function(){
+var move_snake = function(){
   // get the current direction of travel
   // get the box in that direction relative to the head of the snake
   // change css of that box
@@ -55,4 +88,4 @@ var eat_food = function(){
     // delete the current food
     // +1 to the snake length
     // insert random food elsewhere 
-};
+  };
