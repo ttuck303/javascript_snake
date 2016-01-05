@@ -1,0 +1,22 @@
+.box {
+  width: 10px;
+  height: 10px;
+  border: 1px solid black;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  background-color: white;
+}
+
+.game_row {
+  margin: 0;
+  padding: 0;
+  line-height: 10px;
+}
+
+#container {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  background-color: gray;
+}
