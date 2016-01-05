@@ -2,8 +2,10 @@ $( document ).ready(function(){
   console.log('document ready!');
   const grid_side_length = 40;
   var direction;
+  var snake;
   intialize_grid(grid_side_length);
   initialize_snake();
+  render_snake();
 });
 
 var intialize_grid = function(side_length){
@@ -22,6 +24,14 @@ var change_direction = function(dir){
   direction = dir;
   console.log("new direction is "+ direction);
 };
+
+// represent snake as array of arrays
+// row, col
+// have a render function that paints all blocks in the snake array as snake color
+// when advancing
+  // use direction and 'head' to add a new square to the array
+  // remove the tail of the snake (last element of the snake array) [unless the snake eats that turn]
+
 
 $(document).keydown(function(e) {
   switch(e.which) {
@@ -56,7 +66,17 @@ var initialize_snake = function(){
   var y = Math.floor(Math.random()*20)+10;
   //console.log("initializing snake in col "+ x+ " row"+y);
   //console.log("query = "+'#row'+x+' #col'+y);
-  $('#row'+x+' #col'+y).addClass("snake");
+  snake = [];
+  snake.push([x, y]);
+  console.log(snake);
+  //$('#row'+x+' #col'+y).addClass("snake");
+};
+
+var render_snake = function(){
+  for (var i in snake){
+    console.log(snake[i]);
+    $('#row'+snake[i][0]+' #col'+snake[i][1]).addClass("snake");
+  };
 };
 
 var increase_snake_length = function(){
