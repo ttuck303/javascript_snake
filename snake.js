@@ -3,12 +3,16 @@ $( document ).ready(function(){
   const grid_side_length = 40;
   var direction;
   var snake;
+  var game_over;
   intialize_grid(grid_side_length);
   initialize_snake();
+  initialize_direction();
   render_snake();
+  var turn_timer = window.setInterval(game_loop, 500);
 });
 
 var intialize_grid = function(side_length){
+  game_over = false;
   console.log("intializing grid!");
   for (var i = 0; i < side_length; i++){
     var current_row = 'row' + i;
@@ -20,17 +24,31 @@ var intialize_grid = function(side_length){
   };
 };
 
+var initialize_direction = function(){
+  switch(Math.floor(Math.random()*4)){
+    case 0:
+    direction = 'u';
+    break;
+
+    case 1:
+    direction = 'r';
+    break;
+
+    case 2:
+    direction = 'd';
+    break;
+
+    case 3:
+    direction = 'l';
+    break;
+  };
+  console.log("initial direction = "+direction);
+}
+
 var change_direction = function(dir){
   direction = dir;
   console.log("new direction is "+ direction);
 };
-
-// represent snake as array of arrays
-// row, col
-// have a render function that paints all blocks in the snake array as snake color
-// when advancing
-  // use direction and 'head' to add a new square to the array
-  // remove the tail of the snake (last element of the snake array) [unless the snake eats that turn]
 
 
 $(document).keydown(function(e) {
@@ -79,14 +97,39 @@ var render_snake = function(){
   };
 };
 
-var increase_snake_length = function(){
-  // add 1 to a snake length variable
+var get_adjacent_box = function(current_box, direction){
+  var current_row = current_box[0];
+  var current_col = current_box[1];
+  var adjacent;
+  switch(direction){
+    case 'u':
+    adjacent = [current_row-1, current_col];
+    break;
+
+    case 'r':
+    adjacent = [current_row, current_col+1];
+    break;
+
+    case 'd':
+    adjacent = [current_row+1, current_col];
+    break;
+
+    case 'l':
+    adjacent = [current_row, current_col-1];
+    break;
+  };
+  return adjacent;
 };
 
 var move_snake = function(){
-  // get the current direction of travel
-  // get the box in that direction relative to the head of the snake
+  var head = snake[0];
+  var adjacent_box = get_adjacent_box(head, direction);
+  console.log("adjacent box to enter is "+ adjacent_box);
   // change css of that box
+  snake.unshift(adjacent_box);
+  var tail = snake.pop();
+  $('#row'+tail[0]+' #col'+tail[1]).removeClass('snake');
+
   // remove css of the end box
 };
 
@@ -97,9 +140,19 @@ var insert_random_food = function(){
 };
 
 var game_loop = function(){
+  console.log('game loop active. direction = '+direction);
+  if(game_over){
+    window.clearInterval(turn_timer);
+  } else{
+    move_snake();
+    render_snake();
+  }
   // check end game conditions, if none:
   // move the snake 1 space in the current direction
-  // 
+    // use direction and 'head' to add a new square to the array
+    // remove the tail of the snake (last element of the snake array) [unless the snake eats that turn]
+
+  
 
 };
 
