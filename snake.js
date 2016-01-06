@@ -1,5 +1,5 @@
 $( document ).ready(function(){
-  console.log('document ready!');
+  //console.log('document ready!');
   grid_side_length = 40; // global variable TO DO pass grid size without making this a global variable
   var direction;
   var snake;
@@ -9,13 +9,14 @@ $( document ).ready(function(){
   initialize_snake();
   initialize_direction();
   render_snake();
-  turn_timer = window.setInterval(game_loop, 100);
+  game_speed  = 100;
+  turn_timer = window.setInterval(game_loop, game_speed);
   score = 0;
 });
 
 var intialize_grid = function(side_length){
   game_over = false;
-  console.log("intializing grid!");
+  //console.log("intializing grid!");
   for (var i = 0; i < side_length; i++){
     var current_row = 'row' + i;
     $('#game_window').append('<div class="game_row" id="'+ current_row + '"></div>');
@@ -44,34 +45,34 @@ var initialize_direction = function(){
     direction = 'l';
     break;
   };
-  console.log("initial direction = "+direction);
+  //console.log("initial direction = "+direction);
 }
 
 var change_direction = function(dir){
   direction = dir;
-  console.log("new direction is "+ direction);
+  //console.log("new direction is "+ direction);
 };
 
 
 $(document).keydown(function(e) {
   switch(e.which) {
         case 37: // left
-        console.log("pressed left");
+        //console.log("pressed left");
         change_direction("l");
         break;
 
         case 38: // up
-        console.log("pressed up");
+        //console.log("pressed up");
         change_direction("u");
         break;
 
         case 39: // right
-        console.log("pressed right");
+        //console.log("pressed right");
         change_direction("r");
         break;
 
         case 40: // down
-        console.log("pressed down");
+        //console.log("pressed down");
         change_direction("d");
         break;
 
@@ -85,12 +86,12 @@ var initialize_snake = function(){
   var y = Math.floor(Math.random()*20)+10;
   snake = [];
   snake.push([x, y]);
-  console.log(snake);
+  //console.log(snake);
 };
 
 var render_snake = function(){
   for (var i in snake){
-    console.log(snake[i]);
+    //console.log(snake[i]);
     $('#row'+snake[i][0]+' #col'+snake[i][1]).addClass("snake");
   };
 };
@@ -126,18 +127,19 @@ var get_adjacent_box = function(current_box, direction){
 var move_snake = function(){
   var adjacent_box_coordinates = get_adjacent_box(get_snake_head(), direction);
   var adjacent_box_element = find_space_from_arr(adjacent_box_coordinates);
-  console.log("adjacent box to enter is "+ adjacent_box_coordinates);
+  //console.log("adjacent box to enter is "+ adjacent_box_coordinates);
 
   if (check_off_edge(get_snake_head())) {
-    console.log("Game over...");
+    alert("Oops, you went off the edge. Game over... Refresh to play again.");
     return;
   } else if (adjacent_box_element.hasClass('snake')){
-    console.log("Oops, you ate yourself!");
+    alert("Oops, you ate yourself! Game over... Refresh to play again.");
     game_over = true;
     return;
   } else if (adjacent_box_element.hasClass('food')) { // if adjacent box has class food
     adjacent_box_element.removeClass('food');
     update_score();
+    increase_game_speed();
     food_present = false;
   } else { 
     var tail = snake.pop();
@@ -153,7 +155,7 @@ var update_score = function(){
 
 var insert_random_food = function(){
   var empty_space = get_unoccupied_space(grid_side_length);
-  console.log("found empty space at " + empty_space);
+  //console.log("found empty space at " + empty_space);
   find_space_from_arr(empty_space).addClass('food'); // make it food
   food_present = true; // flip flag to make food present
 };
@@ -173,10 +175,10 @@ var get_unoccupied_space = function(board_side_length){
 };
 
 var game_loop = function(){
-  console.log('game loop active. direction = '+direction);
+  //console.log('game loop active. direction = '+direction);
   if(game_over){
     window.clearInterval(turn_timer);
-    console.log("Nice try! Your snake was " + (snake.length) + " units long!")
+    alert("Nice try! Your snake was " + (snake.length) + " units long!")
   } else {
     if (!food_present){
       insert_random_food(); 
@@ -186,10 +188,17 @@ var game_loop = function(){
   };
 };
 
+var increase_game_speed = function(){
+  game_speed -= 2;
+  window.clearInterval(turn_timer);
+  turn_timer = window.setInterval(game_loop, game_speed);
+  //console.log("new game speed = " + game_speed);
+};
+
 var check_off_edge = function(head){
-  console.log("Head at:" + head);
+  //console.log("Head at:" + head);
   if (Number(head[0]) < 0 || Number(head[0]) > grid_side_length-1 || Number(head[1]) < 0 || Number(head[1]) > grid_side_length-1 ){
-    console.log("Went off the edge!");
+    //console.log("Went off the edge!");
     game_over = true;
     return true;
   };
