@@ -10,6 +10,7 @@ $( document ).ready(function(){
   initialize_direction();
   render_snake();
   turn_timer = window.setInterval(game_loop, 100);
+  score = 0;
 });
 
 var intialize_grid = function(side_length){
@@ -136,6 +137,7 @@ var move_snake = function(){
     return;
   } else if (adjacent_box_element.hasClass('food')) { // if adjacent box has class food
     adjacent_box_element.removeClass('food');
+    update_score();
     food_present = false;
   } else { 
     var tail = snake.pop();
@@ -143,6 +145,11 @@ var move_snake = function(){
   };
   snake.unshift(adjacent_box_coordinates); // add adjacent box to head position of snake array
 };
+
+var update_score = function(){
+  score += snake.length;
+  $('#score').text(score);
+}
 
 var insert_random_food = function(){
   var empty_space = get_unoccupied_space(grid_side_length);
