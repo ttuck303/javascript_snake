@@ -1,9 +1,10 @@
 $( document ).ready(function(){
   console.log('document ready!');
-  const grid_side_length = 40;
+  grid_side_length = 40; // global variable TO DO pass grid size without making this a global variable
   var direction;
   var snake;
   var game_over;
+  food_present = false;
   intialize_grid(grid_side_length);
   initialize_snake();
   initialize_direction();
@@ -128,15 +129,32 @@ var move_snake = function(){
   // change css of that box
   snake.unshift(adjacent_box);
   var tail = snake.pop();
-  $('#row'+tail[0]+' #col'+tail[1]).removeClass('snake');
+  find_space_from_arr(tail).removeClass('snake');
 
   // remove css of the end box
 };
 
 var insert_random_food = function(){
-  // find the squares that are not occupied by food or snake
-  // randomly pick up
-  // convert it to food
+  // find the squares that are not occupied by snake (only 1 food item at a time currently so don't need to check for that)
+  var empty_space = get_unoccupied_space(grid_side_length);
+  console.log("found empty space at " + empty_space);
+  // make it food
+  find_space_from_arr(empty_space).addClass('food');
+  food_present = true; // flip flag to make food present
+};
+
+var find_space_from_arr = function(arr){
+  return $('#row'+arr[0]+' #col'+arr[1]);
+}
+
+var get_unoccupied_space = function(board_side_length){
+  var x = Math.floor(Math.random()*board_side_length);
+  var y = Math.floor(Math.random()*board_side_length);
+  if (find_space_from_arr([x, y]).hasClass('snake')) {
+    return get_unoccupied_space(board_side_length);
+  } else {
+    return [x, y];
+  };
 };
 
 var game_loop = function(){
@@ -144,6 +162,10 @@ var game_loop = function(){
   if(game_over){
     window.clearInterval(turn_timer);
   } else{
+    if (!food_present){
+      insert_random_food(); 
+    }
+    
     move_snake();
     render_snake();
   }
