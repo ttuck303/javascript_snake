@@ -98,6 +98,10 @@ var render_snake = function(){
   };
 };
 
+var get_snake_head = function(){
+  return snake[0];
+}
+
 var get_adjacent_box = function(current_box, direction){
   var current_row = current_box[0];
   var current_col = current_box[1];
@@ -173,18 +177,26 @@ var game_loop = function(){
     move_snake();
     render_snake();
   }
+  check_game_over();
   // check end game conditions, if none:
   // move the snake 1 space in the current direction
     // use direction and 'head' to add a new square to the array
     // remove the tail of the snake (last element of the snake array) [unless the snake eats that turn]
-
-
-
   };
 
-  var eat_food = function(){
-  // if a snake eats a food
-    // delete the current food
-    // +1 to the snake length
-    // insert random food elsewhere 
-  };
+  var check_game_over = function(){
+
+    // return true if the snake runs into itself or if it goes off the edge of the board
+    // case 2: goes off the board
+    var head = get_snake_head();
+    console.log("Head at:" + head);
+    if (Number(head[0]) < 0 || Number(head[0]) > grid_side_length-1 || Number(head[1]) < 0 || Number(head[1]) > grid_side_length-1 ){
+      console.log("GAME OVERRRRRRRRRR!!!!!!!!!!!");
+      console.log("GAME OVERRRRRRRRRR!!!!!!!!!!!");
+      console.log("GAME OVERRRRRRRRRR!!!!!!!!!!!");
+      console.log("GAME OVERRRRRRRRRR!!!!!!!!!!!");
+      return true;
+    };
+
+
+  }; 
