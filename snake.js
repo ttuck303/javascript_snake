@@ -124,14 +124,18 @@ var get_adjacent_box = function(current_box, direction){
 
 var move_snake = function(){
   var head = snake[0];
-  var adjacent_box = get_adjacent_box(head, direction);
-  console.log("adjacent box to enter is "+ adjacent_box);
-  // change css of that box
-  snake.unshift(adjacent_box);
-  var tail = snake.pop();
-  find_space_from_arr(tail).removeClass('snake');
+  var adjacent_box_coordinates = get_adjacent_box(head, direction);
+  var adjacent_box_element = find_space_from_arr(adjacent_box_coordinates);
+  console.log("adjacent box to enter is "+ adjacent_box_coordinates);
 
-  // remove css of the end box
+  if (adjacent_box_element.hasClass('food')) { // if adjacent box has class food
+    adjacent_box_element.removeClass('food');
+    food_present = false;
+  } else { 
+    var tail = snake.pop();
+    find_space_from_arr(tail).removeClass('snake');   // remove css of the end box
+  };
+  snake.unshift(adjacent_box_coordinates); // add adjacent box to head position of snake array
 };
 
 var insert_random_food = function(){
@@ -174,11 +178,11 @@ var game_loop = function(){
     // use direction and 'head' to add a new square to the array
     // remove the tail of the snake (last element of the snake array) [unless the snake eats that turn]
 
-  
 
-};
 
-var eat_food = function(){
+  };
+
+  var eat_food = function(){
   // if a snake eats a food
     // delete the current food
     // +1 to the snake length
