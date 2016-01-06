@@ -3,13 +3,13 @@ $( document ).ready(function(){
   grid_side_length = 40; // global variable TO DO pass grid size without making this a global variable
   var direction;
   var snake;
-  var game_over;
+  game_over = false;
   food_present = false;
   intialize_grid(grid_side_length);
   initialize_snake();
   initialize_direction();
   render_snake();
-  var turn_timer = window.setInterval(game_loop, 500);
+  turn_timer = window.setInterval(game_loop, 100);
 });
 
 var intialize_grid = function(side_length){
@@ -80,15 +80,11 @@ $(document).keydown(function(e) {
   });
 
 var initialize_snake = function(){
-  // create a 1 unit snake and initialize the direction of travel
   var x = Math.floor(Math.random()*20)+10;
   var y = Math.floor(Math.random()*20)+10;
-  //console.log("initializing snake in col "+ x+ " row"+y);
-  //console.log("query = "+'#row'+x+' #col'+y);
   snake = [];
   snake.push([x, y]);
   console.log(snake);
-  //$('#row'+x+' #col'+y).addClass("snake");
 };
 
 var render_snake = function(){
@@ -127,12 +123,18 @@ var get_adjacent_box = function(current_box, direction){
 };
 
 var move_snake = function(){
-  var head = snake[0];
-  var adjacent_box_coordinates = get_adjacent_box(head, direction);
+  var adjacent_box_coordinates = get_adjacent_box(get_snake_head(), direction);
   var adjacent_box_element = find_space_from_arr(adjacent_box_coordinates);
   console.log("adjacent box to enter is "+ adjacent_box_coordinates);
 
-  if (adjacent_box_element.hasClass('food')) { // if adjacent box has class food
+  if (check_off_edge(get_snake_head())) {
+    console.log("Game over...");
+    return;
+  } else if (adjacent_box_element.hasClass('snake')){
+    console.log("Oops, you ate yourself!");
+    game_over = true;
+    return;
+  } else if (adjacent_box_element.hasClass('food')) { // if adjacent box has class food
     adjacent_box_element.removeClass('food');
     food_present = false;
   } else { 
@@ -143,11 +145,9 @@ var move_snake = function(){
 };
 
 var insert_random_food = function(){
-  // find the squares that are not occupied by snake (only 1 food item at a time currently so don't need to check for that)
   var empty_space = get_unoccupied_space(grid_side_length);
   console.log("found empty space at " + empty_space);
-  // make it food
-  find_space_from_arr(empty_space).addClass('food');
+  find_space_from_arr(empty_space).addClass('food'); // make it food
   food_present = true; // flip flag to make food present
 };
 
@@ -169,34 +169,21 @@ var game_loop = function(){
   console.log('game loop active. direction = '+direction);
   if(game_over){
     window.clearInterval(turn_timer);
-  } else{
+    console.log("Nice try! Your snake was " + (snake.length) + " units long!")
+  } else {
     if (!food_present){
       insert_random_food(); 
-    }
-    
+    };
     move_snake();
     render_snake();
-  }
-  check_game_over();
-  // check end game conditions, if none:
-  // move the snake 1 space in the current direction
-    // use direction and 'head' to add a new square to the array
-    // remove the tail of the snake (last element of the snake array) [unless the snake eats that turn]
   };
+};
 
-  var check_game_over = function(){
-
-    // return true if the snake runs into itself or if it goes off the edge of the board
-    // case 2: goes off the board
-    var head = get_snake_head();
-    console.log("Head at:" + head);
-    if (Number(head[0]) < 0 || Number(head[0]) > grid_side_length-1 || Number(head[1]) < 0 || Number(head[1]) > grid_side_length-1 ){
-      console.log("GAME OVERRRRRRRRRR!!!!!!!!!!!");
-      console.log("GAME OVERRRRRRRRRR!!!!!!!!!!!");
-      console.log("GAME OVERRRRRRRRRR!!!!!!!!!!!");
-      console.log("GAME OVERRRRRRRRRR!!!!!!!!!!!");
-      return true;
-    };
-
-
-  }; 
+var check_off_edge = function(head){
+  console.log("Head at:" + head);
+  if (Number(head[0]) < 0 || Number(head[0]) > grid_side_length-1 || Number(head[1]) < 0 || Number(head[1]) > grid_side_length-1 ){
+    console.log("Went off the edge!");
+    game_over = true;
+    return true;
+  };
+}; 
